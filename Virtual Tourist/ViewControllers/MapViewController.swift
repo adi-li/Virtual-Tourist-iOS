@@ -50,6 +50,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Create if not found
         if results.count == 0 {
             results = [Map()]
+            CoreDataStackManager.defaultManager.saveContext()
         }
         
         currentMap = results.first!
@@ -82,6 +83,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         // Set region whenever the mapView region changed
         currentMap.region = mapView.region
+        CoreDataStackManager.defaultManager.saveContext()
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -130,9 +132,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let pin = Pin()
             pin.coordinate = coordinate
             pin.map = currentMap
-            // pre-fetch flickr photos
-            pin.fetchFlickrPhotos(false, completion: nil)
             CoreDataStackManager.defaultManager.saveContext()
+            
+            // pre-fetch flickr photos
+            pin.fetchFlickrPhotos(false, completion: { (photos, error) -> Void in
+                guard error == nil else {
+                    return
+                }
+                CoreDataStackManager.defaultManager.saveContext()
+            })
             addingAnnotation = nil
             
         case .Failed:

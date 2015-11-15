@@ -92,6 +92,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let photo = fetchResultsController.objectAtIndexPath(indexPath) as! Photo
         photo.delete()
+        CoreDataStackManager.defaultManager.saveContext()
     }
     
     // MARK: - User actions
@@ -104,12 +105,16 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             photo.delete()
         }
         
+        CoreDataStackManager.defaultManager.saveContext()
+        
         pin.fetchFlickrPhotos(true) { (photos, error) -> Void in
             self.isLoading = false
             
             guard error == nil else {
                 return
             }
+            
+            CoreDataStackManager.defaultManager.saveContext()
         }
     }
     
