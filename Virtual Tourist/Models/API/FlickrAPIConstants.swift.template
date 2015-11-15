@@ -1,0 +1,15 @@
+//
+//  FlickrAPIConstants.swift
+//  Virtual Tourist
+//
+//  Created by Adi Li on 15/11/2015.
+//  Copyright © 2015 Adi Li. All rights reserved.
+//
+
+import Foundation
+
+extension FlickrAPIClient {
+    
+    static var key: String { return "YOUR_FLICKR_API_KEY" }
+    
+}
