@@ -16,15 +16,17 @@ class FlickrAPIClient: APIClient {
     override class var BaseURL: NSURL { return NSURL(string: "https://api.flickr.com/services/rest/")! }
     
     
-    func searchPhotosWithLocation(location: CLLocationCoordinate2D, completion: CompletionHandler?) {
-        let parameters = [
-            "method": "flickr.photos.search",
-            "api_key": self.dynamicType.key,
-            "format": "json",
-            "nojsoncallback": "1",
-            "lat": "\(location.latitude)",
-            "lon": "\(location.longitude)",
-            "extras": "url_s"
+    func searchPhotosWithLocation(location: CLLocationCoordinate2D, page: Int, completion: CompletionHandler?) {
+        let parameters: [String : AnyObject] = [
+            ParameterKey.Method: MethodOption.PhotoSearch.rawValue,
+            ParameterKey.Format: FormatOption.JSON.rawValue,
+            ParameterKey.NoJSONCallback: NoJSONCallbackOption.Yes.rawValue,
+            ParameterKey.APIKey: self.dynamicType.key,
+            ParameterKey.Latitude: location.latitude,
+            ParameterKey.Longitude: location.longitude,
+            ParameterKey.Page: page,
+            ParameterKey.PerPage: 20 + Int(arc4random_uniform(11)),
+            ParameterKey.Extras: ExtrasOption.SmallImageURL,
         ]
         taskForGET("", parameters: parameters, completion: completion)
     }

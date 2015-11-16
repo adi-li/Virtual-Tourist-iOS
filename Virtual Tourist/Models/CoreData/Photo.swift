@@ -15,11 +15,11 @@ class Photo: BaseManagedObject {
     // MARK: - Properties
     
     var imageURL: NSURL {
-        return NSURL(string: self.imageURLString!)!
+        return NSURL(string: imageURLString!)!
     }
     
     var filename: String {
-        return self.imageURL.lastPathComponent!
+        return "\(pin!.name)_" + imageURL.lastPathComponent!
     }
     
     var fileURL: NSURL {

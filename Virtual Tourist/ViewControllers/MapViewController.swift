@@ -24,6 +24,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Reset the map region if currentMap is saved before
         if currentMap.saved {
             mapView.setRegion(currentMap.region, animated: false)
+        } else {
+            CoreDataStackManager.defaultManager.saveContext()
         }
         
         // Add pins to mapView
@@ -50,7 +52,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Create if not found
         if results.count == 0 {
             results = [Map()]
-            CoreDataStackManager.defaultManager.saveContext()
         }
         
         currentMap = results.first!

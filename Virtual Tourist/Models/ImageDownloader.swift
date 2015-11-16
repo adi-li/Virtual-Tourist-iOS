@@ -17,6 +17,8 @@ class ImageDownloader {
     
     var session = NSURLSession.sharedSession()
     var downloadingTasks = [NSURL: [CompletionHandler?]]()
+    // For atomic downloading tasks change
+    let semaphore = dispatch_semaphore_create(1)
     
     func downloadImageWithURLString(URLString: String, toFileURL path: NSURL, completion: CompletionHandler?) {
         guard let URL = NSURL(string: URLString) else {
@@ -30,6 +32,13 @@ class ImageDownloader {
     }
     
     func downloadImageWithRequest(request: NSURLRequest, toFileURL path: NSURL, completion: CompletionHandler?) {
+        
+        // Make this function atomic
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        defer {
+            dispatch_semaphore_signal(semaphore)
+        }
+        
         // If key path exist, means downloading, return immedaiately
         guard downloadingTasks[path] == nil else {
             downloadingTasks[path]!.append(completion)
@@ -43,8 +52,10 @@ class ImageDownloader {
         let task = session.downloadTaskWithRequest(request) { (URL, response, error) -> Void in
             
             // Remove task when it is done
+            dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER)
             let completions = self.downloadingTasks[path]!
             self.downloadingTasks.removeValueForKey(path)
+            dispatch_semaphore_signal(self.semaphore)
             
             // Error handling
             guard error == nil else {

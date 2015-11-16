@@ -159,7 +159,7 @@ class APIClient: NSObject {
     func addAdditionalHeaderToRequest(request: NSMutableURLRequest) {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("OnTheMap/1.0 (Mobile;)", forHTTPHeaderField: "User-Agent")
+        request.setValue("VirtualTourist/1.0 (Mobile;)", forHTTPHeaderField: "User-Agent")
     }
     
     // Parse the data, may throws error if cannot be parsed

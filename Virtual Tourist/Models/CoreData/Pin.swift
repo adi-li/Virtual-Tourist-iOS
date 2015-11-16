@@ -27,24 +27,33 @@ class Pin: BaseManagedObject {
         }
     }
     
+    var name: String {
+        return "\(latitude!)-\(longitude!)".stringByReplacingOccurrencesOfString(".", withString: "_")
+    }
+    
     // MARK: - Fetching photos
     
     func fetchFlickrPhotos(force: Bool, completion: (([Photo]?, NSError?) -> Void)?) {
-        if self.isFetchedPhotos!.boolValue == true && force == false {
+        if lastFetchedPage!.integerValue > 0 && force == false {
             // Return immediately if fetching is done
             // and not force re-fetch
             completion?(Array(photos as! Set), nil)
             return
         }
         
-        self.isFetchedPhotos = true
+        var page: Int
+        repeat {
+            page = 1 + Int(arc4random_uniform(10))
+        } while (lastFetchedPage!.integerValue == page)
         
-        FlickrAPIClient.client.searchPhotosWithLocation(self.coordinate) { (data, error) -> Void in
+        lastFetchedPage = page
+        
+        FlickrAPIClient.client.searchPhotosWithLocation(self.coordinate, page: lastFetchedPage!.integerValue) { (data, error) -> Void in
             
             // Ensure no error
             guard error == nil else {
                 dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                    self.isFetchedPhotos = false
+                    self.lastFetchedPage = 0
                     completion?(nil, error)
                 }
                 return
@@ -56,7 +65,7 @@ class Pin: BaseManagedObject {
                     let parsingError = NSError(domain: "VirtualTouristErrorDomain", code: -1, userInfo: [
                         NSLocalizedDescriptionKey: "Cannot parse data"
                     ])
-                    self.isFetchedPhotos = false
+                    self.lastFetchedPage = 0
                     completion?(nil, parsingError)
                 }
                 return
@@ -68,7 +77,7 @@ class Pin: BaseManagedObject {
                     let parsingError = NSError(domain: "VirtualTouristErrorDomain", code: -1, userInfo: [
                         NSLocalizedDescriptionKey: "Cannot parse data[photos][photo]"
                     ])
-                    self.isFetchedPhotos = false
+                    self.lastFetchedPage = 0
                     completion?(nil, parsingError)
                 }
                 return

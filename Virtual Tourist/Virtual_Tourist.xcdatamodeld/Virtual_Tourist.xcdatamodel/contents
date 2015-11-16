@@ -13,7 +13,7 @@
         <relationship name="pin" maxCount="1" deletionRule="Nullify" destinationEntity="Pin" inverseName="photos" inverseEntity="Pin" syncable="YES"/>
     </entity>
     <entity name="Pin" representedClassName=".Pin" syncable="YES">
-        <attribute name="isFetchedPhotos" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastFetchedPage" attributeType="Integer 16" defaultValueString="NO" syncable="YES"/>
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <relationship name="map" maxCount="1" deletionRule="Nullify" destinationEntity="Map" inverseName="pins" inverseEntity="Map" syncable="YES"/>
