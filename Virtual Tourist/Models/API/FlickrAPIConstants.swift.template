@@ -11,5 +11,33 @@ import Foundation
 extension FlickrAPIClient {
     
     static var key: String { return "YOUR_FLICKR_API_KEY" }
+
+    struct ParameterKey {
+        static let Method = "method"
+        static let APIKey = "api_key"
+        static let Format = "format"
+        static let NoJSONCallback = "nojsoncallback"
+        static let Latitude = "lat"
+        static let Longitude = "lon"
+        static let Page = "page"
+        static let PerPage = "per_page"
+        static let Extras = "extras"
+    }
     
+    enum MethodOption: String {
+        case PhotoSearch = "flickr.photos.search"
+    }
+    
+    enum FormatOption: String {
+        case JSON = "json"
+    }
+    
+    enum NoJSONCallbackOption: Int {
+        case Yes = 1
+        case No = 0
+    }
+    
+    struct ExtrasOption {
+        static let SmallImageURL = "url_s"
+    }
 }
